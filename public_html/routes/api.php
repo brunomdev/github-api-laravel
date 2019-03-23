@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,6 +11,19 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::namespace('Api')->group(
+    function () {
+        Route::prefix('users')->group(
+            function () {
+                Route::get('{username}', 'UserController@get');
+                Route::get('{username}/repos', 'UserController@getRepos');
+            }
+        );
+    }
+);
+
+Route::fallback(
+    function () {
+        return response()->json(['message' => 'Not Found!'], 404);
+    }
+);
